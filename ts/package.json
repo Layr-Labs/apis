@@ -1,0 +1,11 @@
+{
+  "name": "@layrlabs/pepeproofgen",
+  "version": "1.0.0",
+  "description": "Proof backend library for generating PePe proofs",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

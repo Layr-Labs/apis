@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package eigenlayer.apis.api.v1;
+
+option go_package = "github.com/Layr-Labs/apis/protos/eigenlayer/proofs-service/v1";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
+service ProofsService {
+  rpc GetCheckpointProofs(GetCheckpointProofsRequest) returns (GetCheckpointProofsResponse) {
+    option (google.api.http) = {
+      post: "/v1/checkpoint/proof"
+      body: "*"
+    };
+  }
+  rpc GetWithdrawalCredentialsProofs(GetWithdrawalCredentialsProofsRequest) returns (GetWithdrawalCredentialsProofsResponse) {
+    option (google.api.http) = {
+      post: "/v1/withdrawal/proof"
+      body: "*"
+    };
+  }
+}
+
+message ValidatorFieldSet {
+  repeated string FieldsAsHex = 1;
+}
+
+// proof types, designed to be submitted onchain from their exact shapes.
+message WithdrawalCredentialProofCollection {
+  message TStateRootProof {
+    string beaconStateRoot = 1;
+    string proof = 2;
+  }
+
+  optional TStateRootProof stateRootProof = 1;
+  repeated uint64 validatorIndices = 2;
+  repeated string validatorFieldProofs = 3;
+  repeated ValidatorFieldSet validatorFields = 4;
+}
+
+message CheckpointProofCollection {
+  message TValidatorBalancesRootProof {
+    string validatorBalancesRoot = 1;
+    string proof = 2; // [][32]byte
+  }
+
+  message TBalanceProof {
+    string pubKeyHash = 1; // [32]byte
+    string balanceRoot = 2; // []byte
+    string proof = 3; // [][32]byte
+  }
+
+  optional TValidatorBalancesRootProof validatorBalancesRootProof = 1;
+  
+  repeated TBalanceProof balanceProofs = 2;
+}
+
+message GetCheckpointProofsRequest {
+  uint64 chainId = 1; // chainId of network to generate the proofs for.
+
+  string eigenpod_address = 2; // Address of your pod.
+}
+
+message GetCheckpointProofsResponse {
+  OperationStatus status = 1;
+
+  CheckpointProofCollection proofs = 2;
+}
+
+message GetWithdrawalCredentialsProofsRequest {
+  uint64 chainId = 1; // chainId of network to generate the proofs for.
+
+  string eigenpod_address = 2; // Address of your pod.
+}
+
+message GetWithdrawalCredentialsProofsResponse {
+  OperationStatus status = 1;
+
+  uint64 oracleBeaconTimestamp = 3;
+  
+  WithdrawalCredentialProofCollection proofs = 2;
+}
+
+enum OperationStatus {
+  OPERATION_STATUS_TRY_AGAIN = 0;
+  OPERATION_STATUS_FAILURE = 1;
+  OPERATION_STATUS_SUCCESS = 2;
+}

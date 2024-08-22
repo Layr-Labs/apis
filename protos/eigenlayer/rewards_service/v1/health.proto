@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package eigenlayer.apis.health.v1;
+
+option go_package = "github.com/Layr-Labs/apis/protos/eigenlayer/rewards-service/v1";
+
+import "google/api/annotations.proto";
+import "eigenlayer/health/health.proto";
+
+service Health {
+  rpc HealthCheck(eigenlayer.health.HealthCheckRequest) returns (eigenlayer.health.HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/v1/health"
+    };
+  }
+
+  rpc ReadyCheck(eigenlayer.health.ReadyRequest) returns (eigenlayer.health.ReadyResponse) {
+    option (google.api.http) = {
+      get: "/v1/ready"
+    };
+  }
+}

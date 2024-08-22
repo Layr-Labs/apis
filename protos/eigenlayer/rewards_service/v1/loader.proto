@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package eigenlayer.apis.loader.v1;
+
+option go_package = "github.com/Layr-Labs/apis/protos/eigenlayer/rewards-service/v1";
+
+message ReloadProofsRequest {
+
+}
+
+message ReloadProofsResponse {
+
+}
+
+service ProofsLoaderService {
+  rpc ReloadProofs(ReloadProofsRequest) returns (ReloadProofsResponse) {}
+}

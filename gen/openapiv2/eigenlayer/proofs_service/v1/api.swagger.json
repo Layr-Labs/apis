@@ -1,0 +1,272 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "eigenlayer/proofs_service/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProofsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/checkpoint/proof": {
+      "post": {
+        "operationId": "ProofsService_GetCheckpointProofs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCheckpointProofsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetCheckpointProofsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProofsService"
+        ]
+      }
+    },
+    "/v1/withdrawal/proof": {
+      "post": {
+        "operationId": "ProofsService_GetWithdrawalCredentialsProofs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetWithdrawalCredentialsProofsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetWithdrawalCredentialsProofsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProofsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CheckpointProofCollectionTBalanceProof": {
+      "type": "object",
+      "properties": {
+        "pubKeyHash": {
+          "type": "string",
+          "title": "[32]byte"
+        },
+        "balanceRoot": {
+          "type": "string",
+          "title": "[]byte"
+        },
+        "proof": {
+          "type": "string",
+          "title": "[][32]byte"
+        }
+      }
+    },
+    "CheckpointProofCollectionTValidatorBalancesRootProof": {
+      "type": "object",
+      "properties": {
+        "validatorBalancesRoot": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string",
+          "title": "[][32]byte"
+        }
+      }
+    },
+    "WithdrawalCredentialProofCollectionTStateRootProof": {
+      "type": "object",
+      "properties": {
+        "beaconStateRoot": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CheckpointProofCollection": {
+      "type": "object",
+      "properties": {
+        "validatorBalancesRootProof": {
+          "$ref": "#/definitions/CheckpointProofCollectionTValidatorBalancesRootProof"
+        },
+        "balanceProofs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CheckpointProofCollectionTBalanceProof"
+          }
+        }
+      }
+    },
+    "v1GetCheckpointProofsRequest": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "type": "string",
+          "format": "uint64",
+          "description": "chainId of network to generate the proofs for."
+        },
+        "eigenpodAddress": {
+          "type": "string",
+          "description": "Address of your pod."
+        }
+      }
+    },
+    "v1GetCheckpointProofsResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1OperationStatus"
+        },
+        "proofs": {
+          "$ref": "#/definitions/v1CheckpointProofCollection"
+        }
+      }
+    },
+    "v1GetWithdrawalCredentialsProofsRequest": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "type": "string",
+          "format": "uint64",
+          "description": "chainId of network to generate the proofs for."
+        },
+        "eigenpodAddress": {
+          "type": "string",
+          "description": "Address of your pod."
+        }
+      }
+    },
+    "v1GetWithdrawalCredentialsProofsResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1OperationStatus"
+        },
+        "oracleBeaconTimestamp": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "proofs": {
+          "$ref": "#/definitions/v1WithdrawalCredentialProofCollection"
+        }
+      }
+    },
+    "v1OperationStatus": {
+      "type": "string",
+      "enum": [
+        "OPERATION_STATUS_TRY_AGAIN",
+        "OPERATION_STATUS_FAILURE",
+        "OPERATION_STATUS_SUCCESS"
+      ],
+      "default": "OPERATION_STATUS_TRY_AGAIN"
+    },
+    "v1ValidatorFieldSet": {
+      "type": "object",
+      "properties": {
+        "FieldsAsHex": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1WithdrawalCredentialProofCollection": {
+      "type": "object",
+      "properties": {
+        "stateRootProof": {
+          "$ref": "#/definitions/WithdrawalCredentialProofCollectionTStateRootProof"
+        },
+        "validatorIndices": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        },
+        "validatorFieldProofs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validatorFields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ValidatorFieldSet"
+          }
+        }
+      },
+      "description": "proof types, designed to be submitted onchain from their exact shapes."
+    }
+  }
+}

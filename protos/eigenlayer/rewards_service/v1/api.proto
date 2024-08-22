@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package eigenlayer.apis.api.v1;
+
+option go_package = "github.com/Layr-Labs/apis/protos/eigenlayer/rewards-service/v1";
+
+import "google/api/annotations.proto";
+
+message GenerateClaimProofRequest {
+  string earner_address = 1;
+  repeated string tokens = 2;
+}
+
+message EarnerLeaf {
+  string earner = 1;
+  string earner_token_root = 2;
+}
+
+message TokenLeaf {
+  string token = 1;
+  string cumulative_earnings = 2;
+}
+
+message Proof {
+  string root = 1;
+  uint32 root_index = 2;
+  uint32 earner_index = 3;
+  string earner_tree_proof = 4;
+  EarnerLeaf earner_leaf = 5;
+  repeated uint32 leaf_indices = 6;
+  repeated string token_tree_proofs = 7;
+  repeated TokenLeaf token_leaves = 8;
+}
+
+message GenerateClaimProofResponse {
+  Proof proof = 1;
+}
+
+message GetEarnedTokensForEarnerRequest {
+  string earnerAddress = 1;
+}
+
+message TokenAmount {
+  string token = 1;
+  string amount = 2;
+}
+
+message GetEarnedTokensForEarnerResponse {
+  repeated TokenAmount tokens = 1;
+}
+
+service Rewards {
+  rpc GenerateClaimProof(GenerateClaimProofRequest) returns (GenerateClaimProofResponse) {
+    option (google.api.http) = {
+      post: "/v1/claim-proof"
+      body: "*"
+    };
+  }
+
+  rpc GetEarnedTokensForEarner(GetEarnedTokensForEarnerRequest) returns (GetEarnedTokensForEarnerResponse) {
+    option (google.api.http) = {
+      post: "/v1/earned-tokens"
+      body: "*"
+    };
+  }
+}
